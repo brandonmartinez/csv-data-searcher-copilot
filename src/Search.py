@@ -1,10 +1,9 @@
 import os
 from langchain_core.prompts import PromptTemplate
-from langchain_community.llms import Ollama
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.globals import set_debug
+from langchain_openai import AzureChatOpenAI
 import logging
 import sys
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
@@ -13,10 +12,16 @@ logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 class RecordSearcher():
-    def __init__(self, model="llama3"):
-        host = os.getenv('OLLAMA_HOST', "localhost:11434")
-        base_url = f"http://{host}"
-        self.model = Ollama(base_url=base_url, model=model)
+    def __init__(self):
+        openai_deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT')
+        self.model = AzureChatOpenAI(
+            azure_deployment=openai_deployment,
+            api_version="2024-05-01-preview",
+            temperature=0,
+            max_tokens=None,
+            timeout=None,
+            max_retries=2,
+        )
         self.output_parser = StrOutputParser()
 
     def search(self, prompt: str, record: str) -> str:
@@ -41,7 +46,10 @@ SUMMARY:
         )
 
         logging.info('Executing text_document_summary_chain')
-        record_summary_output = record_summary_chain.invoke({"prompt": prompt, "record": record})
+        record_summary_output = record_summary_chain.invoke(
+            {"prompt": prompt, "record": record})
 
         logging.info('Summaries returned')
         logging.debug(record_summary_output)
+
+        return record_summary_output

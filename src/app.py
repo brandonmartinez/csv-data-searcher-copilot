@@ -50,8 +50,9 @@ with open(output_file, 'w', newline='') as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for key, value in output_results.items():
-        file_name, line_number = key.split(':')
-        writer.writerow(
-            {'File Name': file_name, 'Line Number': line_number, 'Output': value})
+        if value is not None and "N/A" not in value:
+            file_name, line_number = key.split(':')
+            writer.writerow(
+                {'File Name': file_name, 'Line Number': line_number, 'Output': value})
 
 print('Done')

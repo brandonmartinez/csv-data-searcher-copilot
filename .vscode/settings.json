@@ -1,7 +1,6 @@
 {
     "cSpell.words": [
-        "langchain",
-        "Ollama"
+        "langchain"
     ],
     "debug.toolBarLocation": "commandCenter",
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv",

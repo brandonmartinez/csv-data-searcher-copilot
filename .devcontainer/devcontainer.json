@@ -26,7 +26,8 @@
 				"yzhang.markdown-all-in-one",
 				"streetsidesoftware.code-spell-checker",
 				"ms-python.autopep8",
-				"KevinRose.vsc-python-indent"
+				"KevinRose.vsc-python-indent",
+				"mechatroner.rainbow-csv"
 			]
 		}
 	}
