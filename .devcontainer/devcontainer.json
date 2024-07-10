@@ -1,0 +1,32 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
+{
+	"name": "Python 3 Environment",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"postCreateCommand": "bash -i ./.devcontainer/postcreate.sh",
+	"forwardPorts": [],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"cstrap.python-snippets",
+				"DavidAnson.vscode-markdownlint",
+				"donjayamanne.python-environment-manager",
+				"eamodio.gitlens",
+				"esbenp.prettier-vscode",
+				"GitHub.copilot-chat",
+				"GitHub.copilot",
+				"ms-azuretools.vscode-docker",
+				"ms-python.debugpy",
+				"ms-python.isort",
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"njqdev.vscode-python-typehint",
+				"yzhang.markdown-all-in-one",
+				"streetsidesoftware.code-spell-checker",
+				"ms-python.autopep8"
+			]
+		}
+	}
+}
