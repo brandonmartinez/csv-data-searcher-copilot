@@ -25,7 +25,8 @@
 				"njqdev.vscode-python-typehint",
 				"yzhang.markdown-all-in-one",
 				"streetsidesoftware.code-spell-checker",
-				"ms-python.autopep8"
+				"ms-python.autopep8",
+				"KevinRose.vsc-python-indent"
 			]
 		}
 	}
