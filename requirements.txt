@@ -24,9 +24,6 @@ llvmlite==0.42.0
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 marshmallow==3.21.1
-mdformat==0.7.17
-mdformat-gfm==0.3.6
-mdformat_tables==0.4.1
 mdit-py-plugins==0.4.0
 mdurl==0.1.2
 more-itertools==10.2.0
