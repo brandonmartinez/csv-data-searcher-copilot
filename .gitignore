@@ -166,4 +166,4 @@ cython_debug/
 #.idea/
 
 # App-specific ignores
-_temp
+_data

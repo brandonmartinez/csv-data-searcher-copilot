@@ -21,6 +21,13 @@ langchain-core==0.2.12
 langchain-openai==0.1.14
 langchain-text-splitters==0.2.2
 langsmith==0.1.85
+linkify-it-py==2.0.3
+markdown-it-py==3.0.0
+mdformat==0.7.17
+mdformat-gfm==0.3.6
+mdformat_tables==0.4.1
+mdit-py-plugins==0.4.1
+mdurl==0.1.2
 multidict==6.0.5
 numpy==1.26.4
 openai==1.35.13
@@ -39,6 +46,7 @@ tenacity==8.5.0
 tiktoken==0.7.0
 tqdm==4.66.4
 typing_extensions==4.12.2
+uc-micro-py==1.0.3
 urllib3==2.2.2
 wheel==0.43.0
 yarl==1.9.4

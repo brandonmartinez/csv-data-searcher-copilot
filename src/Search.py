@@ -27,11 +27,11 @@ class RecordSearcher():
         record_prompt = ChatPromptTemplate.from_messages([
             (
                 "system",
-                """You are an expert at taking a record from a data set and searching the data for a specific scenario.
-With the given record, verify if it contains relevant information based on the given user prompt.
-If the record contains relevant information, provide a summary of the information found.
-Do not include any prompts, call outs, or additional information that is not directly from the summary.
-If the record doesn't contain relevant information, provide only "N/A" as the response; no additional context or information.
+                """You are an expert at taking a record and reviewing it based on a user's prompt.
+With the given record, compare it to the user's query and determine if there is a match.
+If there is a match, summarize the record as a single paragraph in a human-readable format, without mentioning any additional information from the prompt.
+Response should only be from the record summary.
+If there is not a match, only return the explicit value of "N/A".
 
 RECORD:
 {record}
@@ -45,11 +45,11 @@ RECORD:
             record_prompt | self.model | self.output_parser
         )
 
-        logging.info('Executing text_document_summary_chain')
+        logging.info('Executing record_summary_chain')
         record_summary_output = record_summary_chain.invoke(
             {"prompt": prompt, "record": record})
 
-        logging.info('Summaries returned')
+        logging.info('Summary returned')
         logging.debug(record_summary_output)
 
         return record_summary_output

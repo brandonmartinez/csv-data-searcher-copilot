@@ -1,11 +1,12 @@
 import os
+import mdformat
 import sys
 import Search
 import csv
 
 # setup working variables
 working_directory = os.path.abspath(
-    sys.argv[1]) if len(sys.argv) > 1 else "_temp"
+    sys.argv[1]) if len(sys.argv) > 1 else "_data"
 input_directory = working_directory + "/_input"
 output_directory = working_directory + "/_output"
 
@@ -37,22 +38,42 @@ input_prompt = input(
 output_results = {}
 
 for input_file, content in input_files.items():
-    lines = content.split('\n')
-    for line_number, line in enumerate(lines[1:], start=1):
-        result = record_searcher.search(prompt=input_prompt, record=line)
-        output_results[f"{input_file}:{line_number}"] = result
-        # Write output_results to CSV file
-        output_file = os.path.join(output_directory, "results.csv")
+    with open(os.path.join(input_directory, input_file), 'r') as f:
+        reader = csv.reader(f)
+        headers = next(reader)  # Skip the header row
+        for line_number, row in enumerate(reader, start=1):
+            record = dict(zip(headers, row))
+            raw_record = ','.join(record.values())
+            result = record_searcher.search(
+                prompt=input_prompt, record=raw_record)
+            output_record = {
+                'id': record['Id'],
+                'name': record['Name'],
+                'result': result
+            }
+            print(output_record)
+
+            output_results[f"{input_file}:{line_number}"] = output_record
 
 # export results to a CSV file
+output_file = os.path.join(output_directory, "results.csv")
 with open(output_file, 'w', newline='') as csvfile:
-    fieldnames = ['File Name', 'Line Number', 'Output']
+    fieldnames = ['File Name', 'Line Number', 'Id', 'Name', 'Result']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for key, value in output_results.items():
-        if value is not None and "N/A" not in value:
+        if value['result'] is not None and "N/A" not in value['result']:
             file_name, line_number = key.split(':')
             writer.writerow(
-                {'File Name': file_name, 'Line Number': line_number, 'Output': value})
+                {'File Name': file_name, 'Line Number': line_number, 'Id': value['id'], 'Name': value['name'], 'Result': value['result']})
 
-print('Done')
+            print('Done')
+
+# export results to a markdown file with more information as a read-out
+markdown_output_file = os.path.join(output_directory, "results.md")
+with open(markdown_output_file, 'w') as md_file:
+    for key, value in output_results.items():
+        md_file.write(f"## {value['name']}\n")
+        md_file.write(mdformat.text(value['result']))
+        md_file.write(f"\n\n")
+        md_file.write(f"ID: {value['id']}\n\n")
