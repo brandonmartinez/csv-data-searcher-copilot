@@ -3,6 +3,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain.globals import set_debug
 from langchain_openai import AzureChatOpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 import logging
 import sys
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
@@ -12,10 +13,20 @@ logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 class RecordSearcher():
     def __init__(self):
-        openai_deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT')
+        azure_appenv = os.getenv('AZURE_APPENV')
+        openai_endpoint = f'https://openai-{azure_appenv}.openai.azure.com'
+        openai_deployment = os.getenv('AZURE_OPENAI_MODELNAME')
+        token_provider = get_bearer_token_provider(
+            DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+        )
+        bearer_token = token_provider()
+
+        os.environ["AZURE_OPENAI_API_KEY"] = bearer_token
+        os.environ["AZURE_OPENAI_ENDPOINT"] = openai_endpoint
+
         self.model = AzureChatOpenAI(
-            azure_deployment=openai_deployment,
             api_version="2024-05-01-preview",
+            azure_deployment=openai_deployment,
             temperature=0,
             max_tokens=None,
             timeout=None,

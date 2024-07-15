@@ -8,6 +8,9 @@ fi
 echo "Activating Python virtual environment"
 source .venv/bin/activate
 
+echo "Upgrading pip"
+pip install --upgrade pip
+
 if [ -f "requirements.txt" ]; then
     echo "Installing Python dependencies"
     pip install -r requirements.txt

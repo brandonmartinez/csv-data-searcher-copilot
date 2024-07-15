@@ -1,0 +1,14 @@
+{
+    "sku": {
+        "name": "Standard",
+        "capacity": 120
+    },
+    "properties": {
+        "model": {
+            "format": "OpenAI",
+            "name": "$AZURE_OPENAI_MODELNAME",
+            "version": "$AZURE_OPENAI_MODELVERSION"
+        },
+        "versionUpgradeOption": "OnceCurrentVersionExpired"
+    }
+}

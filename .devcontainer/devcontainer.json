@@ -2,11 +2,20 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
 	"name": "Python 3 Environment",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
+	"image": "mcr.microsoft.com/devcontainers/base:debian",
 	"postCreateCommand": "bash -i ./.devcontainer/postcreate.sh",
 	"forwardPorts": [],
+	"features": {
+		"ghcr.io/devcontainers/features/azure-cli:1": {
+			"installBicep": true,
+			"version": "latest"
+		},
+		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": {},
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"version": "latest"
+		}
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -27,7 +36,8 @@
 				"streetsidesoftware.code-spell-checker",
 				"ms-python.autopep8",
 				"KevinRose.vsc-python-indent",
-				"mechatroner.rainbow-csv"
+				"mechatroner.rainbow-csv",
+				"ms-azuretools.vscode-bicep"
 			]
 		}
 	}

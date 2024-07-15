@@ -167,3 +167,5 @@ cython_debug/
 
 # App-specific ignores
 _data
+.temp
+.logs
