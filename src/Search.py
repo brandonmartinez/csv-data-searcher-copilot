@@ -15,7 +15,9 @@ class RecordSearcher():
     def __init__(self):
         azure_appenv = os.getenv('AZURE_APPENV')
         openai_endpoint = f'https://openai-{azure_appenv}.openai.azure.com'
-        openai_deployment = os.getenv('AZURE_OPENAI_MODELNAME')
+        openai_model = os.getenv('AZURE_OPENAI_MODELNAME')
+        openai_version = os.getenv('AZURE_OPENAI_MODELVERSION')
+        openai_deployment = f'{openai_model}-{openai_version}'
         token_provider = get_bearer_token_provider(
             DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
         )
