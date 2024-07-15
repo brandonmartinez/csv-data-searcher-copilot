@@ -73,7 +73,8 @@ with open(output_file, 'w', newline='') as csvfile:
 markdown_output_file = os.path.join(output_directory, "results.md")
 with open(markdown_output_file, 'w') as md_file:
     for key, value in output_results.items():
-        md_file.write(f"## {value['name']}\n")
-        md_file.write(mdformat.text(value['result']))
-        md_file.write(f"\n\n")
-        md_file.write(f"ID: {value['id']}\n\n")
+        if value['result'] is not None and "N/A" not in value['result']:
+            md_file.write(f"## {value['name']}\n")
+            md_file.write(mdformat.text(value['result']))
+            md_file.write(f"\n\n")
+            md_file.write(f"ID: {value['id']}\n\n")
