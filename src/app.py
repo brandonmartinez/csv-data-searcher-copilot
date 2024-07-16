@@ -1,9 +1,9 @@
-import os
-import mdformat
-import sys
-import Search
 import DataFiles
-import csv
+import os
+import Search
+import streamlit as st
+import sys
+import pandas as pd
 
 # setup working variables
 working_directory = os.path.abspath(
@@ -20,63 +20,90 @@ os.makedirs(output_directory, exist_ok=True)
 record_searcher = Search.RecordSearcher()
 csv_reader = DataFiles.CsvReader(input_directory)
 
-# gather CSV files
-input_files = {}
-for file in os.listdir(input_directory):
-    if os.path.isfile(os.path.join(input_directory, file)) and file.lower().endswith('.csv'):
-        with open(os.path.join(input_directory, file), 'r') as f:
-            input_files[file] = f.read()
+# Initialize page data and config
+st.set_page_config(page_title="CSV Data Searcher Copilot", layout="wide")
 
-# we need data, if nothing found return
-if not input_files:
-    print("There are no CSV files found in the input directory; please add at least one and re-run.")
-    sys.exit()
 
-# Read input from user
-input_prompt = input(
-    "What is the scenario that you are searching for with each record in the given file(s)? Write in the form of a GPT-prompt.\n\n")
+def load_csv_files():
+    st.session_state.csv_files = csv_reader.load_files()
 
-# go through each file, and each line in each file (skipping the first for headers), and search for the input prompt
-output_results = {}
 
-for input_file, content in input_files.items():
-    with open(os.path.join(input_directory, input_file), 'r') as f:
-        reader = csv.reader(f)
-        headers = next(reader)  # Skip the header row
-        for line_number, row in enumerate(reader, start=1):
-            record = dict(zip(headers, row))
-            raw_record = ','.join(record.values())
-            result = record_searcher.search(
-                prompt=input_prompt, record=raw_record)
-            output_record = {
-                'id': record['Id'],
-                'name': record['Name'],
-                'result': result
-            }
-            print(output_record)
+def read_and_save_file():
+    for file in st.session_state["file_uploader"]:
+        output_file = os.path.join(input_directory, file.name)
 
-            output_results[f"{input_file}:{line_number}"] = output_record
+        with open(output_file, mode='wb') as w:
+            w.write(file.getvalue())
+    del st.session_state["file_uploader"]
+    load_csv_files();
 
-# export results to a CSV file
-output_file = os.path.join(output_directory, "results.csv")
-with open(output_file, 'w', newline='') as csvfile:
-    fieldnames = ['File Name', 'Line Number', 'Id', 'Name', 'Result']
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    writer.writeheader()
-    for key, value in output_results.items():
-        if value['result'] is not None and "N/A" not in value['result']:
-            file_name, line_number = key.split(':')
-            writer.writerow(
-                {'File Name': file_name, 'Line Number': line_number, 'Id': value['id'], 'Name': value['name'], 'Result': value['result']})
 
-            print('Done')
+@st.cache_data
+def query_openai(user_prompt: str):
+    csv_files = st.session_state.csv_files
+    results = []
+    for file in csv_files:
+        df = csv_files[file]
+        for index, row in df.iterrows():
+            row.dropna(inplace=True)
+            record = ','.join(row.values)
+            result = record_searcher.search(prompt=user_prompt, record=record)
+            if (result != "N/A"):
+                results.append({
+                    "File Name": file,
+                    "Id": row["Id"],
+                    "Name": row["Name"],
+                    "Result": result
+                })
+    return results
 
-# export results to a markdown file with more information as a read-out
-markdown_output_file = os.path.join(output_directory, "results.md")
-with open(markdown_output_file, 'w') as md_file:
-    for key, value in output_results.items():
-        if value['result'] is not None and "N/A" not in value['result']:
-            md_file.write(f"## {value['name']}\n")
-            md_file.write(mdformat.text(value['result']))
-            md_file.write(f"\n\n")
-            md_file.write(f"ID: {value['id']}\n\n")
+
+def user_prompt_on_change():
+    results = query_openai(user_prompt=st.session_state.user_prompt)
+    st.session_state.openai_output = pd.DataFrame.from_records(results)
+
+
+def save_results():
+    output_file = os.path.join(output_directory, "results.csv")
+    st.session_state.openai_output.to_csv(output_file, index=False)
+
+
+def page():
+
+    st.title("CSV Data Searcher Copilot")
+    st.text_input("Prompt against the available data files",
+                  key="user_prompt", on_change=user_prompt_on_change)
+
+    input_column, output_column = st.columns(2)
+
+    input_column.header("Input CSV Files")
+
+    if 'csv_files' not in st.session_state:
+        load_csv_files()
+
+    for file in st.session_state.csv_files:
+        input_column.write(file)
+        input_column.dataframe(st.session_state.csv_files[file])
+
+    input_column.file_uploader(
+        "Upload CSV File",
+        type=["csv"],
+        key="file_uploader",
+        on_change=read_and_save_file,
+        label_visibility="collapsed",
+        accept_multiple_files=True,
+    )
+
+    output_column.header("Output")
+    output_column.text("Results from OpenAI")
+
+    if 'openai_output' not in st.session_state:
+        st.session_state.openai_output = pd.DataFrame(
+            columns=["File Name", "Id", "Name", "Result"]
+        )
+    output_column.dataframe(st.session_state.openai_output)
+    output_column.button("Save Results to Disk", on_click=save_results)
+
+
+if __name__ == "__main__":
+    page()

@@ -5,21 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Launch app.py",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/src/app.py",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Debug Streamlit App",
+            "name": "Python Debugger: Streamlit App",
             "type": "debugpy",
             "request": "launch",
             "module": "streamlit",
             "python": "${workspaceFolder}/.venv/bin/python",
             "args": [
                 "run",
-                "src/web.py"
+                "src/app.py"
             ],
             "envFile": "${workspaceFolder}/.env",
             "justMyCode": true,
