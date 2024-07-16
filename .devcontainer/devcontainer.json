@@ -4,7 +4,9 @@
 	"name": "Python 3 Environment",
 	"image": "mcr.microsoft.com/devcontainers/base:debian",
 	"postCreateCommand": "bash -i ./.devcontainer/postcreate.sh",
-	"forwardPorts": [],
+	"forwardPorts": [
+		8501
+	],
 	"features": {
 		"ghcr.io/devcontainers/features/azure-cli:1": {
 			"installBicep": true,

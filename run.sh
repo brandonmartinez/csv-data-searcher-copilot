@@ -40,4 +40,4 @@ section "Running application"
 
 source .venv/bin/activate
 
-python src/app.py
+streamlit run src/app.py

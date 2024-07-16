@@ -43,17 +43,19 @@ If you are done with the resources and this application, running the
 ## Running the Application
 
 You can either run the application in the VS Code debugger by launching the
-`Python Debugger: Launch app.py` task, or by utilizing the `./run.sh` script in
+`Python Debugger: Streamlit App` task, or by utilizing the `./run.sh` script in
 the root of the repository. Utilizing the debugger will allow you to breakpoint
 and see the steps of the application, while running the script will be bound to
-just the terminal.
+just the web app.
 
-Before running the application, add CSV files to the `_data/_input` directory.
+Once you have started the application, you can view it in the browser at
+http://localhost:8501.
 
 ### Input Files
 
-CSV files should be placed in the `_data/_input` directory; all files that are
-in this directory will be searched as part of the run.
+CSV files should be placed in the `_data/_input` directory or uploaded through
+the web app; all files that are in this directory will be searched as part of
+the run.
 
 #### CSV File Format
 
@@ -66,4 +68,7 @@ There are only a few requirements for the CSV files:
 
 ### Output Files
 
-The output file be placed in the `_data/_output` directory.
+Output will be visible in the web application. Use the `Export to Disk` button
+to save the output to disk.The output file be placed in the `_data/_output`
+directory. You can also download the output file directly from the data grid on
+the web app without saving it to the repository directory.
