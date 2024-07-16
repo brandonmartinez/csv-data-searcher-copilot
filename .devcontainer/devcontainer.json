@@ -2,9 +2,8 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
 	"name": "Python 3 Environment",
-	"image": "mcr.microsoft.com/devcontainers/base:debian",
+	"image": "mcr.microsoft.com/devcontainers/base:debian-12",
 	"postCreateCommand": "bash -i ./.devcontainer/postcreate.sh",
-	"postAttachCommand": "git config --global --add safe.directory /workspaces",
 	"forwardPorts": [
 		8501
 	],
