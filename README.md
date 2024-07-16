@@ -51,6 +51,10 @@ just the web app.
 Once you have started the application, you can view it in the browser at
 http://localhost:8501.
 
+If you have issues utilizing Azure OpenAI, check that you are logged in to the
+`az` cli by opening a terminal in VS Code and running `az login`. This will
+ensure that the application can authenticate to Azure on your behalf.
+
 ### Input Files
 
 CSV files should be placed in the `_data/_input` directory or uploaded through
