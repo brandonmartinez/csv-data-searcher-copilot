@@ -4,6 +4,7 @@
 	"name": "Python 3 Environment",
 	"image": "mcr.microsoft.com/devcontainers/base:debian",
 	"postCreateCommand": "bash -i ./.devcontainer/postcreate.sh",
+	"postAttachCommand": "git config --global --add safe.directory /workspaces",
 	"forwardPorts": [
 		8501
 	],

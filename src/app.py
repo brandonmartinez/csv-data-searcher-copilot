@@ -35,7 +35,7 @@ def read_and_save_file():
         with open(output_file, mode='wb') as w:
             w.write(file.getvalue())
     del st.session_state["file_uploader"]
-    load_csv_files();
+    load_csv_files()
 
 
 @st.cache_data
