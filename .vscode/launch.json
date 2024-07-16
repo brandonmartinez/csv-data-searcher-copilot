@@ -10,6 +10,19 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/app.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug Streamlit App",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "streamlit",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "args": [
+                "run",
+                "src/web.py"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "justMyCode": true,
         }
     ]
 }

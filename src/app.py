@@ -2,6 +2,7 @@ import os
 import mdformat
 import sys
 import Search
+import DataFiles
 import csv
 
 # setup working variables
@@ -17,6 +18,7 @@ os.makedirs(output_directory, exist_ok=True)
 
 # Initialize modules
 record_searcher = Search.RecordSearcher()
+csv_reader = DataFiles.CsvReader(input_directory)
 
 # gather CSV files
 input_files = {}
