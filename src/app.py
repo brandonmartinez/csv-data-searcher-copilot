@@ -5,20 +5,14 @@ import streamlit as st
 import sys
 import pandas as pd
 
-# setup working variables
-working_directory = os.path.abspath(
-    sys.argv[1]) if len(sys.argv) > 1 else "_data"
-input_directory = working_directory + "/_input"
-output_directory = working_directory + "/_output"
-
-# Create directories
-os.makedirs(working_directory, exist_ok=True)
-os.makedirs(input_directory, exist_ok=True)
-os.makedirs(output_directory, exist_ok=True)
-
 # Initialize modules
+wd = DataFiles.WorkingDirectoryHelper(
+    sys.argv[1] if len(sys.argv) > 1 else "_data")
+input_directory, output_directory = wd.create_directories()
+
 record_searcher = Search.RecordSearcher()
 csv_reader = DataFiles.CsvReader(input_directory)
+
 
 # Initialize page data and config
 st.set_page_config(page_title="CSV Data Searcher Copilot", layout="wide")
@@ -34,6 +28,7 @@ def read_and_save_file():
 
         with open(output_file, mode='wb') as w:
             w.write(file.getvalue())
+
     del st.session_state["file_uploader"]
     load_csv_files()
 
@@ -41,20 +36,9 @@ def read_and_save_file():
 @st.cache_data
 def query_openai(user_prompt: str):
     csv_files = st.session_state.csv_files
-    results = []
-    for file in csv_files:
-        df = csv_files[file]
-        for index, row in df.iterrows():
-            row.dropna(inplace=True)
-            record = ','.join(row.values)
-            result = record_searcher.search(prompt=user_prompt, record=record)
-            if (result != "N/A"):
-                results.append({
-                    "File Name": file,
-                    "Id": row["Id"],
-                    "Name": row["Name"],
-                    "Result": result
-                })
+    results = record_searcher.search_csv(
+        prompt=user_prompt, csv_files=csv_files)
+
     return results
 
 

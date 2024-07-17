@@ -21,20 +21,37 @@ class RecordSearcher():
         token_provider = get_bearer_token_provider(
             DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
         )
-        bearer_token = token_provider()
-
-        os.environ["AZURE_OPENAI_API_KEY"] = bearer_token
-        os.environ["AZURE_OPENAI_ENDPOINT"] = openai_endpoint
 
         self.model = AzureChatOpenAI(
             api_version="2024-05-01-preview",
             azure_deployment=openai_deployment,
+            azure_ad_token_provider=token_provider,
+            azure_endpoint=openai_endpoint,
             temperature=0,
             max_tokens=None,
             timeout=None,
             max_retries=2,
         )
         self.output_parser = StrOutputParser()
+
+    def search_csv(self, prompt: str, csv_files: dict) -> list:
+        results = []
+        for file in csv_files:
+            df = csv_files[file]
+            for index, row in df.iterrows():
+                row.dropna(inplace=True)
+                record = ','.join(row.values)
+                result = self.search(
+                    prompt=prompt, record=record)
+                if (result != "N/A"):
+                    results.append({
+                        "File Name": file,
+                        "Id": row["Id"],
+                        "Name": row["Name"],
+                        "Result": result
+                    })
+
+        return results
 
     def search(self, prompt: str, record: str) -> str:
         record_prompt = ChatPromptTemplate.from_messages([
